@@ -12,8 +12,9 @@ class TokenType(Enum):
     XOR = 9
 
 class Token:
-    def __init__(self, type: TokenType, value=None):
+    def __init__(self, type: TokenType, text: str, value=None):
         self.type = type
+        self.text = text
         self.value = value
     
     def __str__(self) -> str:
@@ -55,7 +56,7 @@ class Lexer:
             if in_variable:
                 if not (char.isalpha() or char.isnumeric() or char == '_'):
                     in_variable = False
-                    tokens.append(Token(TokenType.VARIABLE, curr_variable))
+                    tokens.append(Token(TokenType.VARIABLE, curr_variable, curr_variable))
                     curr_variable = ""
                     curr_token_type = get_token_type(char)
                     if curr_token_type == None:
@@ -64,7 +65,7 @@ class Lexer:
                         in_variable = True
                         curr_variable += char
                     else:
-                        tokens.append(Token(curr_token_type))
+                        tokens.append(Token(curr_token_type, char))
                 else:
                     curr_variable += char
 
@@ -77,7 +78,7 @@ class Lexer:
                     in_variable = True
                     curr_variable += char
                 else:
-                    tokens.append(Token(token_type))
+                    tokens.append(Token(token_type, char))
         
-        tokens.append(Token(TokenType.EOF))
+        tokens.append(Token(TokenType.EOF, ""))
         return tokens

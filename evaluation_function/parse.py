@@ -5,7 +5,7 @@ from sympy.logic.boolalg import Boolean, And, Or, Xor, Not
 from sympy.core.symbol import symbols
 
 class ParseError(Exception):
-    
+
     def __init__(self, msg: str):
         self.msg = msg
     def __str__(self):
@@ -36,45 +36,57 @@ def expect(tokens: list[Token], type: TokenType) -> bool:
 
 def parse_term(tokens: list[Token]) -> Term:
     op = expect(tokens, TokenType.NOT)
+
     if tokens[-1].type == TokenType.VARIABLE:
         term = tokens.pop().value
         return Term(term, op)
     elif expect(tokens, TokenType.LBRACKET):
-        term = parse_boolean(tokens)
-        if term == None:
-            return None
-        if not expect(tokens, TokenType.RBRACKET):
-            return None
-        return Term(term, op)
+        try:
+            term = parse_boolean(tokens)
+
+            if not expect(tokens, TokenType.RBRACKET):
+                raise ParseError("Expected closing \')\'")
+            
+            return Term(term, op)
+        except:
+            raise
     else:
-        return None
+        raise ParseError(f"Unexpected token \"{tokens[-1].text}\"")
 
 def parse_prod(tokens: list[Token]) -> Prod:
-    left = parse_term(tokens)
-    if left == None:
-        return None
+    left = None
+    try:
+        left = parse_term(tokens)
+    except:
+        raise
+
     right = []
     while expect(tokens, TokenType.AND):
-        new_right = parse_term(tokens)
-        if new_right == None:
-            return None
-        right.append(new_right)
+        try:
+            new_right = parse_term(tokens)
+            right.append(new_right)
+        except:
+            raise
     
     return Prod(left, right)
 
 # A recursive descent parser
 def parse_boolean(tokens: list[Token]) -> Expr:
-    left = parse_prod(tokens)
-    if left == None:
-        return None
+    left = None
+    try:
+        left = parse_prod(tokens)
+    except:
+        raise
+    
     right = []
     next_token = tokens[-1].type
     while expect(tokens, TokenType.OR) or expect(tokens, TokenType.XOR):
-        new_right = parse_prod(tokens)
-        if new_right == None:
-            return None
-        right.append((next_token == TokenType.XOR, new_right))
-        next_token = tokens[-1].type
+        try:
+            new_right = parse_prod(tokens)
+            right.append((next_token == TokenType.XOR, new_right))
+            next_token = tokens[-1].type
+        except:
+            raise
     
     return Expr(left, right)
 
