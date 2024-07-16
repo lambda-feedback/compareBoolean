@@ -1,7 +1,7 @@
 from typing import Any
 from sympy import simplify_logic, Equivalent
 from lf_toolkit.evaluation import Result, Params
-from lf_toolkit.parse.set import SetParser, LatexPrinter, SymPyBooleanTransformer, ASCIIPrinter
+from lf_toolkit.parse.set import SetParser, SymPyBooleanTransformer
 
 from .parse import parse_with_feedback, FeedbackException
 
@@ -41,23 +41,21 @@ def evaluation_function(
 
     try:
         # 1. convert the `response`, which may be a latex string, to a sympy expression
-        responseSet = parse_with_feedback(response, latex=params.get("is_latex", False))
-        responseSetSympy = sympyTransformer.transform(responseSet)
+        response_set, response_set_sympy = parse_with_feedback(response, latex=params.get("is_latex", False))
 
         # 2. convert the `answer`, which may be a latex string, to a sympy expression
         # TODO: what if answer is also in latex? how do we know?
-        answerSet = parser.parse(answer, latex=False)
-        answerSetSympy = sympyTransformer.transform(answerSet)
+        _, answer_set_sympy = parse_with_feedback(answer, latex=False)
 
         # 3. compare the two sympy expressions w/ simplification enabled.
         #    If they are equal, the sets produced by the two expressions are
         #    semantically equal. However, the expressions may not be equal.
-        semantic_equal = simplify_logic(Equivalent(responseSetSympy, answerSetSympy)) == True
+        semantic_equal = simplify_logic(Equivalent(response_set_sympy, answer_set_sympy)) == True
 
         # 4. compare the two sympy expressions w/ simplifaction disabled.
         #    If they are equal, the expressions are also equal in syntax.
         #    This respects laws of commutativity, e.g. A u B == B u A.
-        syntactic_equal = responseSetSympy == answerSetSympy
+        syntactic_equal = response_set_sympy == answer_set_sympy
 
         enforce_expression_equality = params.get("enforce_expression_equality", False)
 
@@ -71,11 +69,9 @@ def evaluation_function(
         elif not semantic_equal:
             feedback_items.append(("semantic_equality", "The expressions are not equal."))
 
-        latexPrinter = LatexPrinter()
-        latex = latexPrinter.print(responseSet)
+        latex = response_set.to_latex()
 
-        asciiPrinter = ASCIIPrinter()
-        ascii = asciiPrinter.print(responseSet)
+        ascii = str(response_set)
 
         return Result(
             is_correct=is_correct,

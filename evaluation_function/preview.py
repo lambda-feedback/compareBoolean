@@ -1,6 +1,5 @@
 from typing import Any
 from lf_toolkit.preview import Result, Params, Preview
-from lf_toolkit.parse.set import LatexPrinter, ASCIIPrinter
 
 from .parse import parse_with_feedback, FeedbackException
 
@@ -26,13 +25,10 @@ def preview_function(response: Any, params: Params) -> Result:
     """
 
     try:
-        result = parse_with_feedback(response, latex=params.get("is_latex", False))
-
-        latexPrinter = LatexPrinter()
-        latex = latexPrinter.print(result)
-
-        asciiPrinter = ASCIIPrinter()
-        ascii = asciiPrinter.print(result)
+        result, _ = parse_with_feedback(response, latex=params.get("is_latex", False))
+        
+        latex = result.to_latex()
+        ascii = str(result)
 
         return Result(preview=Preview(latex=latex,sympy=ascii))
     except FeedbackException as e:
