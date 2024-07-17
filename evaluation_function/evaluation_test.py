@@ -42,10 +42,11 @@ class TestEvaluationFunction(unittest.TestCase):
     def test_syntax_error(self):
         response, answer, params = "A £ B", "A & B", Params()
 
-        result = evaluation_function(response, answer, params).to_dict()
-
-        self.assertEqual(result.get("is_correct"), False)
-        self.assertTrue(result.get("feedback"))
+        try:
+            evaluation_function(response, answer, params).to_dict()
+            self.fail("Exception not raised for unexpected token")
+        except:
+            pass
     
     def test_xor_identity(self):
         response, answer, params = "A ^ B", "A & ~B | ~A & B", Params()
@@ -85,6 +86,14 @@ class TestEvaluationFunction(unittest.TestCase):
     
     def test_complex(self):
         response, answer, params = "A & B | B & C & (B | C)", "B & (A | C)", Params()
+
+        result = evaluation_function(response, answer, params).to_dict()
+
+        self.assertEqual(result.get("is_correct"), True)
+        self.assertFalse(result.get("feedback"))
+
+    def test_brackets(self):
+        response, answer, params = "(A)", "A", Params()
 
         result = evaluation_function(response, answer, params).to_dict()
 

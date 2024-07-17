@@ -42,7 +42,7 @@ def parse_term(tokens: list[Token]) -> Term:
         return Term(term, op)
     elif expect(tokens, TokenType.LBRACKET):
         try:
-            term = parse_boolean(tokens)
+            term = parse_boolean(tokens, rec=True)
 
             if not expect(tokens, TokenType.RBRACKET):
                 raise ParseError("Expected closing \')\'")
@@ -71,7 +71,7 @@ def parse_prod(tokens: list[Token]) -> Prod:
     return Prod(left, right)
 
 # A recursive descent parser
-def parse_boolean(tokens: list[Token]) -> Expr:
+def parse_boolean(tokens: list[Token], rec: bool = False) -> Expr:
     left = None
     try:
         left = parse_prod(tokens)
@@ -88,6 +88,10 @@ def parse_boolean(tokens: list[Token]) -> Expr:
         except:
             raise
     
+    # Did the user input any extra tokens that were ignored? This is an error.
+    if not rec and tokens[-1].type != TokenType.EOF:
+        raise ParseError(f"Unexpected token \"{tokens[-1].text}\"")
+
     return Expr(left, right)
 
 def parse_with_feedback(input: str, latex: bool = False) -> tuple[Expr, Boolean]:
