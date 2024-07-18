@@ -1,7 +1,6 @@
 from typing import Any
 from sympy import simplify_logic, Equivalent
 from lf_toolkit.evaluation import Result, Params
-from lf_toolkit.parse.set import SetParser, SymPyBooleanTransformer
 
 from .parse import parse_with_feedback, FeedbackException
 
@@ -32,9 +31,6 @@ def evaluation_function(
     return types and that evaluation_function() is the main function used
     to output the evaluation response.
     """
-
-    parser = SetParser.instance()
-    sympyTransformer = SymPyBooleanTransformer()
 
     # here we want to compare the response set with the example solution set.
     # we have to do the following steps
