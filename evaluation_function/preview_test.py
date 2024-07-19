@@ -29,21 +29,21 @@ class TestPreviewFunction(unittest.TestCase):
         self.assertIsNotNone(result["preview"])
 
     def test_returns_preview_sympy(self):
-        response, params = "A n B", Params()
+        response, params = "A | B", Params()
 
         result = preview_function(response, params)
 
         self.assertIn("preview", result)
-        self.assertEqual(result["preview"]["sympy"], "A n B")
+        self.assertEqual(result["preview"]["sympy"], "A | B")
         self.assertRaises(KeyError, lambda: result["preview"]["feedback"])
 
     def test_returns_preview_latex(self):
-        response, params = "A \\cap B", Params(is_latex=True)
+        response, params = "A & B", Params(is_latex=True)
 
         result = preview_function(response, params)
 
         self.assertIn("preview", result)
-        self.assertEqual(result["preview"]["latex"], "A \\cap B")
+        self.assertEqual(result["preview"]["latex"], "A \\cdot B")
         self.assertRaises(KeyError, lambda: result["preview"]["feedback"])
 
     def test_returns_none_not_parseable(self):
