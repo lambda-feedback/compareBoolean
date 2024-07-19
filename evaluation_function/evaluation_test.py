@@ -126,4 +126,4 @@ class TestEvaluationFunction(unittest.TestCase):
     @classmethod
     def tearDownClass(self):
         with open("docs/test_output.json", "w") as f:
-            f.write(json.dumps(self.test_output))
+            f.write(json.dumps({"test_results": self.test_output}))
