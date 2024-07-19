@@ -4,8 +4,11 @@ class Term:
         self.op = op
 
     def __str__(self) -> str:
-        out = "" if not self.op else "!"
-        return out + str(self.term)
+        out = "" if not self.op else "~"
+        if isinstance(self.term, str):
+            return out + self.term
+        else:
+            return out + f"({str(self.term)})"
     
     def to_latex(self) -> str:
         out = ""
@@ -28,10 +31,10 @@ class Prod:
         self.right = right
     
     def __str__(self) -> str:
-        out = "(" + str(self.left)
+        out = str(self.left)
         for right in self.right:
             out += f" & {str(right)}"
-        return out + ")"
+        return out
 
     def to_latex(self) -> str:
         out = self.left.to_latex()
@@ -47,10 +50,10 @@ class Expr:
         self.right = right
     
     def __str__(self) -> str:
-        out = "(" + str(self.left)
+        out = str(self.left)
         for xor, right in self.right:
             out += f" {'^' if xor else '|'} {str(right)}"
-        return out + ")"
+        return out
     
     def to_latex(self) -> str:
         out = self.left.to_latex()
