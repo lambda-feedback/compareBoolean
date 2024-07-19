@@ -22,6 +22,9 @@ class TestEvaluationFunction(unittest.TestCase):
     Use evaluation_function() to check your algorithm works
     as it should.
     """
+
+    test_output = []
+
     # Utility to help extract test info for documentation:
 
     def docs_from_test(self, context):
@@ -32,7 +35,7 @@ class TestEvaluationFunction(unittest.TestCase):
             'is_correct': context['result'].get("is_correct"),
             'feedback': context['result'].get("feedback")
         }
-        print(json.dumps(docs))
+        self.test_output.append(docs)
 
     # Tests
 
@@ -119,3 +122,8 @@ class TestEvaluationFunction(unittest.TestCase):
 
         self.assertEqual(result.get("is_correct"), True)
         self.assertFalse(result.get("feedback"))
+
+    @classmethod
+    def tearDownClass(self):
+        with open("docs/test_output.json", "w") as f:
+            f.write(json.dumps(self.test_output))
