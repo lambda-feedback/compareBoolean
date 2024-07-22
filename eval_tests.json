@@ -1,0 +1,18 @@
+[
+    {
+        "response": "A & Test",
+        "answer": "A & Test",
+        "params": {},
+        "is_correct": true,
+        "results": {
+            "response_latex": "A \\cdot \\mathrm{Test}"
+        }
+    },
+    {
+        "response": "A | B",
+        "answer": "A & B",
+        "params": {},
+        "is_correct": false,
+        "feedback": "The expressions are not equal."
+    }
+]
