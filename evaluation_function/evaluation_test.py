@@ -2,6 +2,7 @@ import unittest
 import json
 
 from .evaluation import Params, evaluation_function
+from .json_tests import get_tests_from_json
 
 class TestEvaluationFunction(unittest.TestCase):
     """
@@ -123,40 +124,10 @@ class TestEvaluationFunction(unittest.TestCase):
         self.assertFalse(result.get("feedback"))
 
     def test_auto(self):
-        tests = {}
-        with open("eval_tests.json", "r") as test_file:
-            test_json = test_file.read()
-            tests = json.loads(test_json)
-        
+        tests = get_tests_from_json("eval_tests.json")
         for test in tests:
-            response = test["response"]
-            answer = test["answer"]
-            params = test["params"]
-
-            result = evaluation_function(response, answer, params).to_dict()
-            correct = result["is_correct"]
-            
-            if result.get("is_correct") != test["is_correct"]:
-                self.assertFalse(
-                    correct != test["is_correct"],
-                    f"response \"{response}\" with answer \"{answer}\" was {'' if correct else 'in'}correct."
-                )
-            
-            # Are there any other fields in the eval function result that need to be checked?
-            desired_result = test.get("results")
-            if desired_result != None:
-                # Check each one in turn
-                for key, value in desired_result.items():
-                    actual_result_val = result.get(key)
-                    if actual_result_val == None:
-                        self.fail(f"No value returned for \"{key}\"")
-                    
-                    self.assertEqual(
-                        actual_result_val,
-                        value,
-                        f"expected {key} = \"{value}\", got {key} = \"{actual_result_val}\""
-                    )
-
+            results = test.evaluate()
+            self.assertTrue(*test.compare(results.to_dict()))
 
     @classmethod
     def tearDownClass(self):
