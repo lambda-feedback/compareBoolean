@@ -23,20 +23,6 @@ class TestEvaluationFunction(unittest.TestCase):
     as it should.
     """
 
-    test_output = []
-
-    # Utility to help extract test info for documentation:
-
-    def docs_from_test(self, context):
-        docs = {
-            'response': context['response'],
-            'answer': context['answer'],
-            'params': context['params'],
-            'is_correct': context['result'].get("is_correct"),
-            'feedback': context['result'].get("feedback")
-        }
-        self.test_output.append(docs)
-
     # Tests
 
     def test_returns_is_correct_true_ascii(self):
@@ -48,7 +34,6 @@ class TestEvaluationFunction(unittest.TestCase):
         self.assertEqual(result.get("response_latex"),
                          "A \\cdot \mathrm{Test}")
         self.assertFalse(result.get("feedback"))
-        self.docs_from_test(locals())
 
     def test_returns_negative(self):
         response, answer, params = "A | B", "A & B", Params()
@@ -58,7 +43,6 @@ class TestEvaluationFunction(unittest.TestCase):
         self.assertEqual(result.get("is_correct"), False)
         self.assertEqual(result.get("response_latex"), "A + B")
         self.assertTrue(result.get("feedback"))
-        self.docs_from_test(locals())
 
     def test_syntax_error(self):
         response, answer, params = "A £ B", "A & B", Params()
@@ -128,8 +112,3 @@ class TestEvaluationFunction(unittest.TestCase):
         for test in tests:
             results = test.evaluate()
             self.assertTrue(*test.compare(results.to_dict()))
-
-    @classmethod
-    def tearDownClass(self):
-        with open("docs/test_output.json", "w") as f:
-            f.write(json.dumps({"test_results": self.test_output}))
