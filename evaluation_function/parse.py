@@ -1,4 +1,4 @@
-from .lex import Token, TokenType, Lexer
+from .lex import Token, TokenType, Lexer, LexError
 from .ast import Expr, Prod, Term
 
 from sympy.logic.boolalg import Boolean, And, Or, Xor, Not
@@ -15,7 +15,7 @@ class ParseError(Exception):
 class FeedbackException(Exception):
 
     def __str__(self):
-        if isinstance(self.__cause__, ParseError):
+        if isinstance(self.__cause__, ParseError) or isinstance(self.__cause__, LexError):
             return str(self.__cause__)
         else:
             return "Evaluation failed"
@@ -96,7 +96,12 @@ def parse_boolean(tokens: list[Token], rec: bool = False) -> Expr:
 
 def parse_with_feedback(input: str, latex: bool = False) -> tuple[Expr, Boolean]:
     # Tokenise the input string
-    tokens = Lexer(input).lex()
+    tokens = None
+    try:
+        tokens = Lexer(input).lex()
+    except Exception as e:
+        raise FeedbackException from e
+        
     # Attempt to parse the tokens into an AST
     try:
         expr = parse_boolean(list(reversed(tokens)))

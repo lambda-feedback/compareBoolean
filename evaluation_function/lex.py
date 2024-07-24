@@ -1,5 +1,11 @@
 from enum import Enum
 
+class LexError(Exception):
+    def __init__(self, char: str):
+        self.unexpected = char
+    def __str__(self) -> str:
+        return f"unexpected token \'{self.unexpected}\'"
+
 class TokenType(Enum):
     LBRACKET = 1
     RBRACKET = 2
@@ -50,7 +56,7 @@ class Lexer:
             elif char.isalpha():
                 return TokenType.VARIABLE
             else:
-                return TokenType.UNKNOWN
+                raise LexError(char)
 
         for char in self.input:
             if in_variable:
@@ -58,27 +64,33 @@ class Lexer:
                     in_variable = False
                     tokens.append(Token(TokenType.VARIABLE, curr_variable, curr_variable))
                     curr_variable = ""
-                    curr_token_type = get_token_type(char)
-                    if curr_token_type == None:
-                        continue
-                    if curr_token_type == TokenType.VARIABLE:
-                        in_variable = True
-                        curr_variable += char
-                    else:
-                        tokens.append(Token(curr_token_type, char))
+                    try:
+                        curr_token_type = get_token_type(char)
+                        if curr_token_type == None:
+                            continue
+                        if curr_token_type == TokenType.VARIABLE:
+                            in_variable = True
+                            curr_variable += char
+                        else:
+                            tokens.append(Token(curr_token_type, char))
+                    except LexError:
+                        raise
                 else:
                     curr_variable += char
 
             else:
-                token_type = get_token_type(char)
-                if token_type == None:
-                    continue
-                
-                if token_type == TokenType.VARIABLE:
-                    in_variable = True
-                    curr_variable += char
-                else:
-                    tokens.append(Token(token_type, char))
+                try:
+                    token_type = get_token_type(char)
+                    if token_type == None:
+                        continue
+                    
+                    if token_type == TokenType.VARIABLE:
+                        in_variable = True
+                        curr_variable += char
+                    else:
+                        tokens.append(Token(token_type, char))
+                except LexError:
+                    raise
         
         tokens.append(Token(TokenType.EOF, ""))
         return tokens
