@@ -18,7 +18,7 @@ class TestData:
         if eval_correct != self.is_correct:
             return (
                 False,
-                f"response \"{self.response}\" with answer \"{self.answer}\" was {'' if eval_correct else 'in'}correct."
+                f"response \"{self.response}\" with answer \"{self.answer}\" was {'' if eval_correct else 'in'}correct: {eval_result['feedback']}."
             )
         
         # Are there any other fields in the eval function result that need to be checked?
