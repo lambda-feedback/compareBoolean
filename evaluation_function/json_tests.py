@@ -5,8 +5,10 @@ class TestData:
         self.response = test_dict["response"]
         self.answer = test_dict["answer"]
         self.params = test_dict["params"]
-        self.is_correct = test_dict["is_correct"]
-        self.results = test_dict.get("results")
+        expected_result = test_dict["expectedResult"]
+        self.is_correct = expected_result["is_correct"]
+        self.results = expected_result
+        self.desc = test_dict["description"]
 
     def evaluate(self, func) -> dict:
         return func(self.response, self.answer, self.params)
@@ -17,7 +19,7 @@ class TestData:
         if eval_correct != self.is_correct:
             return (
                 False,
-                f"response \"{self.response}\" with answer \"{self.answer}\" was {'' if eval_correct else 'in'}correct: {eval_result['feedback']}."
+                f"response \"{self.response}\" with answer \"{self.answer}\" was {'' if eval_correct else 'in'}correct: {eval_result['feedback']}\nTest description: {self.desc}"
             )
         
         # Are there any other fields in the eval function result that need to be checked?
@@ -31,7 +33,7 @@ class TestData:
                 if actual_result_val != value:
                     return (
                         False,
-                        f"expected {key} = \"{value}\", got {key} = \"{actual_result_val}\""
+                        f"expected {key} = \"{value}\", got {key} = \"{actual_result_val}\"\nTest description: {self.desc}"
                     )
         
         return (True, "")
@@ -39,12 +41,20 @@ class TestData:
 
 def get_tests_from_json(filename: str) -> list[TestData]:
     out = []
-    tests = []
+    questions = []
     with open(filename, "r") as test_file:
         test_json = test_file.read()
-        tests = json.loads(test_json)
-    for test in tests:  
-        out.append(TestData(test))
+        questions = json.loads(test_json)
+    # Convert the structured test data into a flat list of tests
+    for question in questions:
+        for part in question["parts"]:
+            for response_area in part["responseAreas"]:
+                params = response_area["params"]
+                answer = response_area["answer"]
+                for test in response_area["tests"]:
+                    test.update({"answer": answer})
+                    test.update({"params": params})
+                    out.append(TestData(test))
     
     return out
 

@@ -91,8 +91,7 @@ class TestEvaluationFunction(unittest.TestCase):
         self.assertFalse(result.get("feedback"))
 
     def test_complex(self):
-        response, answer, params = "A & B | B & C & (B | C)", "B & (A | C)", Params(
-        )
+        response, answer, params = "A & B | B & C & (B | C)", "B & (A | C)", Params()
 
         result = evaluation_function(response, answer, params).to_dict()
 
