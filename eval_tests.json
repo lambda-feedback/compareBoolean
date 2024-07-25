@@ -1,0 +1,76 @@
+[
+    {
+        "title": "Basic expression equality and inequality",
+        "masterContent": "Demonstrates trivial comparisons",
+        "parts": [
+            {
+                "content": "The response and answer are exactly the same, so the response should be considered correct.",
+                "responseAreas": [
+                    {
+                        "preResponseText": "",
+                        "answer": "A & B",
+                        "params": {},
+                        "tests": [
+                            {
+                                "description": "Most basic possible case",
+                                "response": "A & B",
+                                "expectedResult": {
+                                    "is_correct": true,
+                                    "response_latex": "A \\cdot B"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "preResponseText": "Multi-character variable names are supported.",
+                        "answer": "A & Test",
+                        "params": {},
+                        "tests": [
+                            {
+                                "description": "Works with variable names of any length",
+                                "response": "A & Test",
+                                "expectedResult": {
+                                    "is_correct": true,
+                                    "response_latex": "A \\cdot \\mathrm{Test}"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "content": "",
+                "responseAreas": [
+                    {
+                        "preResponseText": "Transposition of variables:",
+                        "answer": "A & B",
+                        "params": {},
+                        "tests": [
+                            {
+                                "description": "Tests transposed variables are correct",
+                                "response": "B & A",
+                                "expectedResult": {
+                                    "is_correct": true
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "preResponseText": "Trivially incorrect response:",
+                        "answer": "A & B",
+                        "params": {},
+                        "tests": [
+                            {
+                                "description": "Incorrect results marked as false",
+                                "response": "A | B",
+                                "expectedResult": {
+                                    "is_correct": false
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

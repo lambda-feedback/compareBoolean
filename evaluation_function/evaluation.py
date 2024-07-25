@@ -14,7 +14,7 @@ def evaluation_function(
     response: Any,
     answer: Any,
     params: Params,
-) -> dict:
+) -> Result:
     """
     Function used to evaluate a student response.
     ---
