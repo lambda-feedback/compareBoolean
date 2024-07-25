@@ -133,3 +133,5 @@ dmypy.json
 
 # Test reports
 reports/
+
+.DS_Store
