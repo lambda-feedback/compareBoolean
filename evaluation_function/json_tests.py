@@ -1,5 +1,4 @@
 import json
-from .evaluation import evaluation_function
 
 class TestData:
     def __init__(self, test_dict: dict):
@@ -9,8 +8,8 @@ class TestData:
         self.is_correct = test_dict["is_correct"]
         self.results = test_dict.get("results")
 
-    def evaluate(self) -> dict:
-        return evaluation_function(self.response, self.answer, self.params)
+    def evaluate(self, func) -> dict:
+        return func(self.response, self.answer, self.params)
     
     def compare(self, eval_result: dict) -> tuple[bool, str]:
         eval_correct = eval_result["is_correct"]
@@ -48,3 +47,15 @@ def get_tests_from_json(filename: str) -> list[TestData]:
         out.append(TestData(test))
     
     return out
+
+def auto_test(path, func):
+    def _auto_test(orig_class):
+        def test_auto(self):
+            tests = get_tests_from_json(path)
+            for test in tests:
+                results = test.evaluate(func)
+                self.assertTrue(*test.compare(results.to_dict()))
+
+        orig_class.test_auto = test_auto # Add the test_auto function to the class
+        return orig_class
+    return _auto_test

@@ -1,9 +1,9 @@
 import unittest
-import json
 
 from .evaluation import Params, evaluation_function
-from .json_tests import get_tests_from_json
+from .json_tests import auto_test
 
+@auto_test("eval_tests.json", evaluation_function)
 class TestEvaluationFunction(unittest.TestCase):
     """
     TestCase Class used to test the algorithm.
@@ -106,9 +106,3 @@ class TestEvaluationFunction(unittest.TestCase):
 
         self.assertEqual(result.get("is_correct"), True)
         self.assertFalse(result.get("feedback"))
-
-    def test_auto(self):
-        tests = get_tests_from_json("eval_tests.json")
-        for test in tests:
-            results = test.evaluate()
-            self.assertTrue(*test.compare(results.to_dict()))
