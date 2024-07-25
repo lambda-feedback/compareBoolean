@@ -25,7 +25,7 @@ def preview_function(response: Any, params: Params) -> Result:
     split into many) is entirely up to you.
     """
     
-    disallowed = get_disallowed(params.get("disallowed", []))
+    disallowed = get_disallowed([])
 
     try:
         result, _ = parse_with_feedback(response, disallowed, latex=params.get("is_latex", False))
