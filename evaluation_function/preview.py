@@ -2,6 +2,7 @@ from typing import Any
 from lf_toolkit.preview import Result, Params, Preview
 
 from .parse import parse_with_feedback, FeedbackException
+from .evaluation import get_disallowed
 
 def preview_function(response: Any, params: Params) -> Result:
     """
@@ -23,9 +24,11 @@ def preview_function(response: Any, params: Params) -> Result:
     The way you wish to structure you code (all in this function, or
     split into many) is entirely up to you.
     """
+    
+    disallowed = get_disallowed(params.get("disallowed", []))
 
     try:
-        result, _ = parse_with_feedback(response, latex=params.get("is_latex", False))
+        result, _ = parse_with_feedback(response, disallowed, latex=params.get("is_latex", False))
         
         latex = result.to_latex()
         ascii = str(result)

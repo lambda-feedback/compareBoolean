@@ -4,6 +4,12 @@ from lf_toolkit.evaluation import Result, Params
 
 from .parse import parse_with_feedback, FeedbackException
 
+def get_disallowed(disallowed_list: list[str]) -> dict:
+    disallowed = {}
+    for op in ["and", "or", "not", "xor"]:
+        disallowed.update({op: op in disallowed_list})
+    return disallowed
+
 def evaluation_function(
     response: Any,
     answer: Any,
@@ -35,13 +41,16 @@ def evaluation_function(
     # here we want to compare the response set with the example solution set.
     # we have to do the following steps
 
+    # create a dictionary of which operations are allowed:
+    disallowed = get_disallowed(params.get("disallowed", []))
+
     try:
         # 1. convert the `response`, which may be a latex string, to a sympy expression
-        response_set, response_set_sympy = parse_with_feedback(response, latex=params.get("is_latex", False))
+        response_set, response_set_sympy = parse_with_feedback(response, disallowed, latex=params.get("is_latex", False))
 
         # 2. convert the `answer`, which may be a latex string, to a sympy expression
         # TODO: what if answer is also in latex? how do we know?
-        _, answer_set_sympy = parse_with_feedback(answer, latex=False)
+        _, answer_set_sympy = parse_with_feedback(answer, disallowed, latex=False)
 
         # 3. compare the two sympy expressions w/ simplification enabled.
         #    If they are equal, the sets produced by the two expressions are

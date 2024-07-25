@@ -99,3 +99,11 @@ class TestEvaluationFunction(unittest.TestCase):
 
         self.assertEqual(result.get("is_correct"), True)
         self.assertFalse(result.get("feedback"))
+    
+    def test_disallowed(self):
+        response, answer, params = "A | B", "~(~A & ~B)", Params({"disallowed": ["or"]})
+
+        result = evaluation_function(response, answer, params).to_dict()
+        
+        self.assertEqual(result.get("is_correct"), False)
+        self.assertTrue(result.get("feedback"))

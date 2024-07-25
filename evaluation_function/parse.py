@@ -94,7 +94,7 @@ def parse_boolean(tokens: list[Token], rec: bool = False) -> Expr:
 
     return Expr(left, right)
 
-def parse_with_feedback(input: str, latex: bool = False) -> tuple[Expr, Boolean]:
+def parse_with_feedback(input: str, disallowed: dict, latex: bool = False) -> tuple[Expr, Boolean]:
     # Tokenise the input string
     tokens = None
     try:
@@ -107,12 +107,12 @@ def parse_with_feedback(input: str, latex: bool = False) -> tuple[Expr, Boolean]
         expr = parse_boolean(list(reversed(tokens)))
 
         # Walk the tree, converting the result into a sympy boolean expression
-        sympy_expr = conv_expr(expr)
+        sympy_expr = conv_expr(expr, disallowed)
         return expr, sympy_expr
     except Exception as e:
         raise FeedbackException from e
 
-def conv_term(term: Term) -> Boolean:
+def conv_term(term: Term, disallowed: dict) -> Boolean:
     out = None
     # Is this term a variable?
     if isinstance(term.term, str):
@@ -120,22 +120,36 @@ def conv_term(term: Term) -> Boolean:
         out = symbols(term.term)
     else:
         # If it isnt a variable, it must be a nested expression
-        out = conv_expr(term.term)
+        out = conv_expr(term.term, disallowed)
+    if term.op and disallowed["not"]:
+        raise ParseError("\"NOT\" is not permitted for this question")
     return Not(out) if term.op else out
 
-def conv_prod(prod: Prod) -> Boolean:
-    left = conv_term(prod.left)
-    right_list = []
-    for right in prod.right:
-        right_list.append(conv_term(right))
-    return And(left, *right_list)
+def conv_prod(prod: Prod, disallowed: dict) -> Boolean:
+    try:
+        left = conv_term(prod.left, disallowed)
+        right_list = []
+        for right in prod.right:
+            if disallowed["and"]:
+                raise ParseError("\"AND\" is not permitted for this question")
+            right_list.append(conv_term(right, disallowed))
+        return And(left, *right_list)
+    except:
+        raise
 
-def conv_expr(expr: Expr) -> Boolean:
-    result = conv_prod(expr.left)
-    for xor, right in expr.right:
-        right = conv_prod(right)
-        if xor:
-            result = Xor(result, right)
-        else:
-            result = Or(result, right)
-    return result
+def conv_expr(expr: Expr, disallowed: dict) -> Boolean:
+    try:
+        result = conv_prod(expr.left, disallowed)
+        for xor, right in expr.right:
+            right = conv_prod(right, disallowed)
+            if xor:
+                if disallowed["xor"]:
+                    raise ParseError("\"XOR\" is not permitted for this question")
+                result = Xor(result, right)
+            else:
+                if disallowed["or"]:
+                    raise ParseError("\"OR\" is not permitted for this question")
+                result = Or(result, right)
+        return result
+    except:
+        raise
