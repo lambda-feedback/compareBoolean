@@ -42,7 +42,15 @@ Each pair of expressions is equivalent, and would be marked as "correct" by comp
 
 ### Optional parameters
 
-There is currently one optional parameter that can be set: `enforce_expression_equality`.
+There are two optional parameters that can be set: `enforce_expression_equality` and `disallowed`.
 
 ### `enforce_expression_equality`
+
 If this Boolean parameter is true, the response and the answer must be strictly equal, i.e in the same form.
+
+### `disallowed`
+
+This parameter is a list of strings (`"and"`, `"or"`, `"not"` or `"xor"`). If one of these strings is present in the list, that operation
+will be disallowed. For example, responding `A | B` to an answer of `~(~A & ~ B)` would normally be considered correct, but if a 
+`"disallowed": ["or"]` parameter were added, it would be considered incorrect. This could be useful for questions on De Morgan's laws, such as 
+expressing a function using only NAND gates.
