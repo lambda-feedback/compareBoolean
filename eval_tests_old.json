@@ -14,7 +14,7 @@
                             {
                                 "description": "Most basic possible case",
                                 "response": "A & B",
-                                "expectedResult": {
+                                "expected_result": {
                                     "is_correct": true,
                                     "response_latex": "A \\cdot B"
                                 }
@@ -29,7 +29,7 @@
                             {
                                 "description": "Works with variable names of any length",
                                 "response": "A & Test",
-                                "expectedResult": {
+                                "expected_result": {
                                     "is_correct": true,
                                     "response_latex": "A \\cdot \\mathrm{Test}"
                                 }
@@ -49,7 +49,7 @@
                             {
                                 "description": "Tests transposed variables are correct",
                                 "response": "B & A",
-                                "expectedResult": {
+                                "expected_result": {
                                     "is_correct": true
                                 }
                             }
@@ -63,7 +63,7 @@
                             {
                                 "description": "Incorrect results marked as false",
                                 "response": "A | B",
-                                "expectedResult": {
+                                "expected_result": {
                                     "is_correct": false
                                 }
                             }

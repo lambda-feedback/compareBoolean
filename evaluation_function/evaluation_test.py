@@ -1,9 +1,9 @@
 import unittest
 
 from .evaluation import Params, evaluation_function
-from .json_tests import auto_test
+from .auto_tests import auto_test
 
-@auto_test("eval_tests.json", evaluation_function)
+@auto_test("eval_tests.yaml", evaluation_function)
 class TestEvaluationFunction(unittest.TestCase):
     """
     TestCase Class used to test the algorithm.

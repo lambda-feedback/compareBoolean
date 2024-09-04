@@ -1,0 +1,55 @@
+# YAML supports comments: one reason to prefer it over JSON, which doesn't.
+---
+title: Trivial comparisons
+tests:
+  - description: The response and answer are exactly the same, so the response should be considered correct.
+    # Parameters can be given, but this field can be removed if none are needed
+    params: {}
+    answer: "A & B"
+    response: "A & B"
+    expected_result:
+      is_correct: yes
+      # Ensure that the latex returned (for the preview) is correct
+      response_latex: "A \\cdot B"
+
+  - description: Multi-character variable names are also supported
+    answer: "A & Test"
+    response: "A & Test"
+    expected_result:
+      is_correct: yes
+      response_latex: "A \\cdot \\mathrm{Test}"
+# Tests can be divided into sections using '---'
+---
+title: Trivial comparisons, but not identical
+tests:
+  - description: Variables can appear in any order.
+    answer: "A & B"
+    response: "B & A"
+    expected_result:
+      is_correct: yes
+      # Any other fields returned by the evaluation function can be tested too, but this is optional.
+
+  - description: > # Multi-line strings are possible for readability
+      The wrong operator is used, so this is incorrect as
+      the two expressions have different truth tables.
+    answer: "A & B"
+    response: "A | B"
+    expected_result:
+      is_correct: no
+---
+# This illustrates how sub-tests can be used to share the same answer and parameters
+# for multiple tests.
+title: More complex comparisons
+tests:
+  - description: XOR can be implemented using NAND or NOR
+    answer: "A ^ B"
+    sub_tests:
+      - description: "Using NAND:"
+        response: "~(~(A & ~(A & B)) & ~(B & ~(A & B)))"
+        expected_result:
+          is_correct: yes
+      - description: "Using NOR:"
+        response: "~(~(~A | ~B) | ~(A | B))"
+        expected_result:
+          is_correct: yes
+ 

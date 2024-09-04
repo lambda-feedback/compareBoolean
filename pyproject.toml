@@ -16,6 +16,7 @@ lf_toolkit = { git = "https://github.com/lambda-feedback/toolkit-python.git", br
     "parsing",
     "ipc",
 ] }
+pyyaml = "^6.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
