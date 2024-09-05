@@ -68,7 +68,7 @@ pyyaml = "^6.0"
 type = "git"
 url = "https://github.com/m-hurlow/autotests.git"
 reference = "main"
-resolved_reference = "2070b6b3cfc215d69cd78afdade45efbad1e84e2"
+resolved_reference = "15bf10cd53727ab172b22fe0eb3674d4021fbbe6"
 
 [[package]]
 name = "colorama"

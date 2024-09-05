@@ -52,4 +52,18 @@ tests:
         response: "~(~(~A | ~B) | ~(A | B))"
         expected_result:
           is_correct: yes
- 
+  - description: "A few examples using de Morgan's laws:"
+    answer: "A | (B & C)"
+    sub_tests:
+      - response: ~(~A & ~(B & C))
+        expected_result:
+          is_correct: yes
+      - response: "A | ~(~B | ~C)"
+        expected_result:
+          is_correct: yes
+  - description: You shouldn't see this one in the docs, but it is still a functional test
+    answer: "A | B"
+    response: "~(~A & ~B)"
+    exclude_from_docs: yes
+    expected_result:
+      is_correct: yes
