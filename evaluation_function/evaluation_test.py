@@ -1,7 +1,7 @@
 import unittest
+from autotests import auto_test
 
 from .evaluation import Params, evaluation_function
-from .auto_tests import auto_test
 
 @auto_test("eval_tests.yaml", evaluation_function)
 class TestEvaluationFunction(unittest.TestCase):

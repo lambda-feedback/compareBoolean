@@ -53,6 +53,24 @@ tests = ["cloudpickle", "hypothesis", "mypy (>=1.11.1)", "pympler", "pytest (>=4
 tests-mypy = ["mypy (>=1.11.1)", "pytest-mypy-plugins"]
 
 [[package]]
+name = "autotests"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = "^3.9"
+files = []
+develop = false
+
+[package.dependencies]
+pyyaml = "^6.0"
+
+[package.source]
+type = "git"
+url = "https://github.com/m-hurlow/autotests.git"
+reference = "main"
+resolved_reference = "2070b6b3cfc215d69cd78afdade45efbad1e84e2"
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
@@ -693,4 +711,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "53684e5addafbd2d9885262b3fa1bf9f1ac03adb7cda5f44a81102414f996241"
+content-hash = "8a3a65c48227e6a302a1a6515a0e388df21a31685bb880b13e03a0072ab5b3f3"
