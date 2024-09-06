@@ -16,7 +16,7 @@ lf_toolkit = { git = "https://github.com/lambda-feedback/toolkit-python.git", br
     "parsing",
     "ipc",
 ] }
-autotests = { git = "https://github.com/m-hurlow/autotests.git", branch = "main" }
+autotests = { git = "https://github.com/lambda-feedback/evaluation-function-auto-tests", branch = "main" }
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"

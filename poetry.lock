@@ -66,9 +66,9 @@ pyyaml = "^6.0"
 
 [package.source]
 type = "git"
-url = "https://github.com/m-hurlow/autotests.git"
+url = "https://github.com/lambda-feedback/evaluation-function-auto-tests"
 reference = "main"
-resolved_reference = "8b59fb77d1efc85eee1c95f1c52462bd592b6754"
+resolved_reference = "1dfcf6c11dc442160fcd4a6ab3084d3c036a04ee"
 
 [[package]]
 name = "colorama"
@@ -711,4 +711,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "8a3a65c48227e6a302a1a6515a0e388df21a31685bb880b13e03a0072ab5b3f3"
+content-hash = "6873b0e4bb14f7f4b8ff31a6c70b094b82d5537b155632242d841b12bd80febf"

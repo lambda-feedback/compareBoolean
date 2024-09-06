@@ -8,7 +8,7 @@ tests:
     answer: "A & B"
     response: "A & B"
     expected_result:
-      is_correct: yes
+      is_correct: true
       # Ensure that the latex returned (for the preview) is correct
       response_latex: "A \\cdot B"
 
@@ -16,7 +16,7 @@ tests:
     answer: "A & Test"
     response: "A & Test"
     expected_result:
-      is_correct: yes
+      is_correct: true
       response_latex: "A \\cdot \\mathrm{Test}"
 # Tests can be divided into sections using '---'
 ---
@@ -26,7 +26,7 @@ tests:
     answer: "A & B"
     response: "B & A"
     expected_result:
-      is_correct: yes
+      is_correct: true
       # Any other fields returned by the evaluation function can be tested too, but this is optional.
 
   - description: > # Multi-line strings are possible for readability
@@ -35,7 +35,7 @@ tests:
     answer: "A & B"
     response: "A | B"
     expected_result:
-      is_correct: no
+      is_correct: false
 ---
 # This illustrates how sub-tests can be used to share the same answer and parameters
 # for multiple tests.
@@ -47,23 +47,23 @@ tests:
       - description: "Using NAND:"
         response: "~(~(A & ~(A & B)) & ~(B & ~(A & B)))"
         expected_result:
-          is_correct: yes
+          is_correct: true
       - description: "Using NOR:"
         response: "~(~(~A | ~B) | ~(A | B))"
         expected_result:
-          is_correct: yes
+          is_correct: true
   - description: "A few examples using de Morgan's laws:"
     answer: "A | (B & C)"
     sub_tests:
-      - response: ~(~A & ~(B & C))
+      - response: "~(~A & ~(B & C))"
         expected_result:
-          is_correct: yes
+          is_correct: true
       - response: "A | ~(~B | ~C)"
         expected_result:
-          is_correct: yes
+          is_correct: true
   - description: You shouldn't see this one in the docs, but it is still a functional test
     answer: "A | B"
     response: "~(~A & ~B)"
-    exclude_from_docs: yes
+    exclude_from_docs: true
     expected_result:
-      is_correct: yes
+      is_correct: true
