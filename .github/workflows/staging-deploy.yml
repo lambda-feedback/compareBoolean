@@ -1,10 +1,10 @@
-name: Build, Test and Deploy
+name: Deploy to Lambda Feedback
 
 on:
   push:
     branches:
       - main
-  pull_request:
+      - master
   workflow_dispatch:
 
 jobs:
@@ -28,7 +28,8 @@ jobs:
           lfs: true
       - name: pull lfs files
         run: git lfs pull
-
+      - name: Verify LFS files
+        run: git lfs ls-files
       - name: Set up Python ${{ matrix.python-version }}
         id: python-setup
         uses: actions/setup-python@v5
@@ -58,7 +59,7 @@ jobs:
       - name: Install dependencies
         if: steps.dependencies-cache.outputs.cache-hit != 'true'
         run: |
-          poetry install  --no-interaction --no-root
+          poetry install  --with dev --no-interaction --no-root
 
       # TODO: add linting / black / flake8
       # - name: Lint with flake8
@@ -82,27 +83,16 @@ jobs:
           name: test-results
           path: ./reports/pytest.xml
           if-no-files-found: warn
-
-  build:
-    name: Build Docker Image
-    uses: lambda-feedback/evaluation-function-workflows/.github/workflows/build.yml@main
-    needs: test
-    permissions:
-      contents: read
-      id-token: write
-      packages: write
-
   deploy:
-    name: Deploy to Lambda Feedback
-    uses: lambda-feedback/evaluation-function-workflows/.github/workflows/deploy.yml@main
     needs: test
+    uses: lambda-feedback/evaluation-function-workflows/.github/workflows/deploy.yml@deploy-request
     with:
       template-repository-name: "lambda-feedback/evaluation-function-boilerplate-python"
-    permissions:
-      contents: read
-      id-token: write
-      packages: write
+      build-platforms: "aws"
+      environment: "staging"
+      lfs: true
     secrets:
       aws-key-id: ${{ secrets.LAMBDA_CONTAINER_PIPELINE_AWS_ID }}
       aws-secret-key: ${{ secrets.LAMBDA_CONTAINER_PIPELINE_AWS_SECRET}}
       function-admin-api-key: ${{ secrets.FUNCTION_ADMIN_API_KEY}}
+      gcp_credentials: ${{ secrets.GCP_DEPLOY }}
