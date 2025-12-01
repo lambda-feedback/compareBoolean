@@ -25,6 +25,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          lfs: true
+      - name: pull lfs files
+        run: git lfs pull
 
       - name: Set up Python ${{ matrix.python-version }}
         id: python-setup
@@ -88,13 +91,13 @@ jobs:
       contents: read
       id-token: write
       packages: write
-        
+
   deploy:
     name: Deploy to Lambda Feedback
     uses: lambda-feedback/evaluation-function-workflows/.github/workflows/deploy.yml@main
     needs: test
     with:
-      template-repository-name: "lambda-feedback/evaluation-function-boilerplate-wolfram"
+      template-repository-name: "lambda-feedback/evaluation-function-boilerplate-python"
     permissions:
       contents: read
       id-token: write
