@@ -70,7 +70,7 @@ def evaluation_function(
         feedback_items=[]
 
         if semantic_equal and not syntactic_equal and enforce_expression_equality:
-            feedback_items.append(("syntactic_equality", "The expressions are not equal syntacitcally."))
+            feedback_items.append(("syntactic_equality", "The expressions are not equal syntactically."))
         elif not semantic_equal:
             feedback_items.append(("semantic_equality", "The expressions are not equal."))
 

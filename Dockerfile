@@ -25,6 +25,9 @@ RUN python -m compileall -q .
 # Copy the evaluation function to the app directory
 COPY evaluation_function ./evaluation_function
 
+# Copy the auto-test spec so the healthcheck's test_auto can run in the image
+COPY eval_tests.yaml ./eval_tests.yaml
+
 # Command to start the evaluation function with
 ENV FUNCTION_COMMAND="python"
 

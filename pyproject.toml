@@ -10,9 +10,9 @@ packages = [{ include = "evaluation_function" }]
 evaluation_function = "evaluation_function.main:main"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.12"
 typing_extensions = "^4.12.2"
-lf_toolkit = { git = "https://github.com/lambda-feedback/toolkit-python.git", branch = "main", extras = [
+lf_toolkit = { git = "https://github.com/lambda-feedback/toolkit-python.git", tag = "v1.1.1", extras = [
     "parsing",
     "ipc",
 ] }
